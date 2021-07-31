@@ -2,6 +2,7 @@ const Twitter = require('twitter')
 require('dotenv').config({ path: './config.env' })
 const fetch = require('node-fetch')
 
+//Create an Instance of Twitter API and Authenticate using App Keys 
 const twitterClient = new Twitter({
     consumer_key: process.env.TWITTER_CONSUMER_KEY,
     consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
@@ -20,7 +21,6 @@ const newDogsThisHour = async () => {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         })
-        console.log('this is token res', tokenRes)
         const { access_token } = await tokenRes.json()
         const dogResponse = await fetch(
             `https://api.petfinder.com/v2/animals?type=dog&location=98121&distance=100&after=${hourAgo}`,
@@ -48,6 +48,37 @@ const newDogsThisHour = async () => {
     }
 }
 
+function retweet() {
+    let params = { 
+        q: '#puppy filter:media',
+        result_type: "popular",
+        lang: "en"
+    };
+    //Send a GET Request to search/tweets inorder to get the tweets with the Query 
+    twitterClient.get("search/tweets", params, function(error, data, response) {
+            if (error) {
+                console.log("Cannot Grab Latest Tweet On Hashtag: ", params.q);
+                return; 
+            }
+            console.log("Data from API is: ", data)
+            if (data && data.statuses.length > 0) {
+                //Tweets are on an array on the searched object (data.statuses)
+                let tweet = data.statuses[0];
+                //We want to retweet only one tweet so we access the first one (0 index)
+                console.log('This is the tweet', tweet); 
+                // Retweet using the tweet's ID 
+                twitterClient.post("statuses/retweet/" + tweet.id_str, (err, res) => {
+                    if (err) {
+                        console.log("Cannot Retweet your Tweet!");
+                        return;
+                    } else {
+                        console.log("Success, Check your Account for the Retweet!");
+                    }
+                })
+            }
+     })        
+}
+
 const shareDog = async() => {
     const newDogs = await newDogsThisHour()
     if (newDogs) {
@@ -66,5 +97,16 @@ const shareDog = async() => {
     }
 }
 
-shareDog()
-setInterval(shareDog, 1000 * 60 * 60) //share every hour afterwards
+//get data from PetFinder API and set interval for 1hr
+const adoptionDataTweets = () => {
+    shareDog()
+    setInterval(shareDog, 1000 * 60 * 60) //share every hour afterwards
+}
+// #puppy retweets and set interval for 30mins
+const puppyRetweets = () => {
+    retweet()
+    setInterval(retweet, 60*30 * 1000)
+}
+
+adoptionDataTweets()
+puppyRetweets()
