@@ -51,7 +51,7 @@ const newDogsThisHour = async () => {
 function retweet() {
     let params = { 
         q: '#puppy filter:media',
-        result_type: "popular",
+        result_type: "recent",
         lang: "en"
     };
     //Send a GET Request to search/tweets inorder to get the tweets with the Query 
