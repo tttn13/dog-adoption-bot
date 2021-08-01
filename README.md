@@ -52,7 +52,9 @@ const retweetFn = (tweet_object) => {
 };
 ```
 
-<img src='./assets/img/like_bot.png'>    
+<img src='./assets/img/like_bot.png'><br />            
+
+    
     
 Below is the `likeTweet` function
 
