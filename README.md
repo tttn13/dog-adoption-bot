@@ -32,8 +32,12 @@ const searchTweets = (callback) => {
 
 ```
 ### Callback Function for the returned tweet(s) 
-After getting the data from the API, I want the bot to like and retweet the tweet(s) so I will make 2 callback functions called `retweetFn` and `likeTweet`
-<img src='./assets/img/retweet_bot.png'>
+After getting the data from the API, I want the bot to like and retweet the tweet(s) so I will make 2 callback functions called `retweetFn` and `likeTweet` <br />      
+
+
+<img src='./assets/img/retweet_bot.png'><br />   
+
+
 Below is the `retweetFn` function 
 ```sh
 const retweetFn = (tweet_object) => {
@@ -54,7 +58,7 @@ const retweetFn = (tweet_object) => {
 
 <img src='./assets/img/like_bot.png'><br />            
 
-    
+
     
 Below is the `likeTweet` function
 
