@@ -65,14 +65,26 @@ const shareDog = async () => {
   }
 };
 
+//create the Like/Favorites function
+const likeTweet = (tweet_object) => {
+    twitterClient.post(
+    "favorites/create",
+    { id: tweet_object.id_str },
+    (err, data, response) => {
+      if (!err) console.log("This is the tweet i'm liking", data);
+      else console.log("Cannot like the tweet because", err);
+    }
+  );
+};
+
 //create the Retweet function
 const retweetFn = (tweet_object) => {
-  Twitter.post(
+    twitterClient.post(
     "status/retweet/:id",
     { id: tweet_object.id_str },
     (err, data, response) => {
       if (err) {
-        console.log("Cannot Retweet your Tweet because of", err.message);
+        console.log("Cannot Retweet your Tweet because of", err);
         return;
       }
       console.log("Success, Check your Account for the Retweet!");
@@ -89,15 +101,15 @@ const searchTweets = (callback) => {
     lang: "en",
   };
 
-  Twitter.get("search/tweets", params, (err, data, response) => {
+  twitterClient.get("search/tweets", params, (err, data, response) => {
     if (data && data.statuses.length > 0) {
       //tweets results are stored in the data.statuses array, we only want 1 tweet so we access it via index
       let tweet = data.statuses[0];
-      console.log("This is the tweet", tweet);
+      console.log("This is the tweet ", tweet);
       callback(tweet); // callback function that we passed in is the retweet function => we passed in the tweet to the retweet function
       return;
     } else {
-      console.log("Cannot Grab Latest Tweet due to ", err.message);
+      console.log("Cannot grab tweet because of ", err);
     }
   });
 };
@@ -111,6 +123,7 @@ adoptionDataTweets();
 
 // #puppy retweets and set interval for 30mins
 const puppyRetweets = () => {
+  searchTweets(likeTweet);
   searchTweets(retweetFn);
 };
 puppyRetweets();
