@@ -67,7 +67,7 @@ const shareDog = async () => {
 
 //create the Like/Favorites function
 const likeTweet = (tweet_object) => {
-    twitterClient.post(
+  twitterClient.post(
     "favorites/create",
     { id: tweet_object.id_str },
     (err, data, response) => {
@@ -79,9 +79,8 @@ const likeTweet = (tweet_object) => {
 
 //create the Retweet function
 const retweetFn = (tweet_object) => {
-    twitterClient.post(
-    "status/retweet/:id",
-    { id: tweet_object.id_str },
+  twitterClient.post(
+    "statuses/retweet/" + tweet_object.id_str,
     (err, data, response) => {
       if (err) {
         console.log("Cannot Retweet your Tweet because of", err);
@@ -95,17 +94,19 @@ const retweetFn = (tweet_object) => {
 //create a Searching function that searches tweets with the desired params
 const searchTweets = (callback) => {
   let params = {
-    q: "#puppy filter:media",
+    q: "#puppy #dog filter:media",
     count: 1,
     result_type: "mixed",
     lang: "en",
   };
 
   twitterClient.get("search/tweets", params, (err, data, response) => {
+    console.log("this is data length", data.statuses.length);
+    console.log("tweet id is", data.statuses[0].id_str);
+    console.log("tweet text is", data.statuses[0].text);
     if (data && data.statuses.length > 0) {
       //tweets results are stored in the data.statuses array, we only want 1 tweet so we access it via index
       let tweet = data.statuses[0];
-      console.log("This is the tweet ", tweet);
       callback(tweet); // callback function that we passed in is the retweet function => we passed in the tweet to the retweet function
       return;
     } else {
@@ -117,9 +118,9 @@ const searchTweets = (callback) => {
 //get data from PetFinder API and set interval for 1hr
 const adoptionDataTweets = () => {
   shareDog();
-  setInterval(shareDog, 1000 * 60 * 60); //share every hour afterwards
 };
 adoptionDataTweets();
+setInterval(adoptionDataTweets, 1000 * 60 * 60); //share every hour afterwards
 
 // #puppy retweets and set interval for 30mins
 const puppyRetweets = () => {
