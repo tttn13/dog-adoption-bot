@@ -34,8 +34,7 @@ const searchTweets = (callback) => {
 ### Callback Function for the returned tweet(s) 
 After getting the data from the API, I want the bot to like and retweet the tweet(s) so I will make 2 callback functions called `retweetFn` and `likeTweet`
 <img src='./assets/img/retweet_bot.png'>
-<img src='./assets/img/like_bot.png'>
-
+Below is the `retweetFn` function 
 ```sh
 const retweetFn = (tweet_object) => {
     twitterClient.post(
@@ -52,6 +51,27 @@ const retweetFn = (tweet_object) => {
   );
 };
 ```
+
+<img src='./assets/img/like_bot.png'>
+Below is the `likeTweet` function
+
+```sh
+const likeTweet = (tweet_object) => {
+  twitterClient.post(
+    "favorites/create",
+    { id: tweet_object.id_str },
+    (err, data, response) => {
+      if (!err) {
+          // do something 
+      }
+      else {
+          // do something
+      }
+    }
+  );
+};
+```
+
 ### Set an interval 
  I want the bot to run each hour and search for recent and top tweets on the given hashtag(s). If there is any then the bot will like and retweet. 
 
